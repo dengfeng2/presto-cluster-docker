@@ -1,0 +1,49 @@
+version: "3.9"
+services:
+    coodinator:
+        image: presto:latest
+        volumes:
+          - ./coordinator-etc:/presto-etc
+        networks:
+          - presto-net
+        hostname: coordinator
+        ports:
+          - "8080:8080"
+    worker1:
+        image: presto:latest
+        volumes:
+          - ./worker-etc:/presto-etc
+        networks:
+          - presto-net
+        hostname: worker1
+    worker2:
+        image: presto:latest
+        volumes:
+          - ./worker-etc:/presto-etc
+        networks:
+          - presto-net
+        hostname: worker2
+    postgresql:
+        image: postgres:14.1
+        networks:
+          - presto-net
+        hostname: postgresql
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: my-secret-pw
+            POSTGRES_USER: yhy
+    mysql:
+        image: mysql:8.0.27
+        networks:
+          - presto-net
+        hostname: mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: my-secret-pw
+            MYSQL_DATABASE: yhy
+            MYSQL_USER: yhy
+            MYSQL_PASSWORD: my-secret-pw
+
+networks:
+    presto-net:
+        driver: bridge
